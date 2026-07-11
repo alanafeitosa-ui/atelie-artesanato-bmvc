@@ -1,0 +1,2 @@
+#Dependências externas do projeto.
+#Atualmente o projeto utiliza apenas bibliotecas nativas do python.
