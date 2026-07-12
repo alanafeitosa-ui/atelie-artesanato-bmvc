@@ -1,8 +1,12 @@
 # *Sistema de gestão para ateliê de artesanato*
 
 ## *Sobre*
-Projeto desenvolvido para a disciplina de programação orientada a objetos utilizando a arquitetura BMVC.
-O sistema permite o gerenciamento de produutos, clientes, pedidos e estoque de um ateliê de artesanato.
+Sistema web desenvolvido para a disciplina de programação orientada a objetos utilizando a arquitetura BMVC.
+O sistema é destinado exclusivamente ao proprietário de um ateliê de artesanato, permitindo gerenciar produtos, clientes, pedidos, matérias-primas e estoque de forma organizada.
+
+---
+## *Objetivo*
+Desenvolver um sistema seguindo os princípios da Programação Orientada a Objetos e da arquitetura MVC, contemplando os requisitos dos quatro níveis da disciplina.
 
 ---
 
@@ -11,23 +15,81 @@ O sistema permite o gerenciamento de produutos, clientes, pedidos e estoque de u
 - Cadastro de clientes;
 - Cadastro de pedidos;
 - Controle de estoque;
+- Controle de matéria-prima;
 - Sistema de login;
+- Área administrativa
 - Atualização em tempo real (WebSocket).
 
 ---
 
 ## *Tecnologias* 
 - Python;
+- Flask;
 - SQLite;
-- HTML;
-- CSS
+- HTML5;
+- CSS3;
 - JavaScript.
 
 ---
 
 ## *Arquitetura*
-BMVC
-- Model;
-- Boundary;
-- View;
-- Controller.
+O projeto segue o padrão **BMVC**
+```
+Boundary
+ ↓
+Controller
+ ↓
+Model
+ ↓
+ SQLite
+ ↓
+ View (Templates HTML)
+```
+---
+
+## *Estrutura do projeto*
+```
+src/
+|
+|--app.py
+|--controlers/
+|--models/
+|--boundary/
+|--database/
+|--templates/
+|--static/
+```
+---
+
+## *Modelagem*
+O sistema utiliza conceitos de Orientação a Objetos como:
+- Abstração;
+- Herança;
+- Encapsulamento;
+- Polimorfismo;
+- Enum;
+- Associação;
+- Composição.
+
+---
+
+## *Principais Classes*
+- Produto(abstrata)
+- ProdutoProntaEntrega
+- ProdutoEncomenda
+- Cliente
+- Pedido
+- ItemPedido
+- MateriaPrima
+- Usuario
+
+---
+
+## *Integrantes*
+- Alana Cristyna
+- Yasmim Ayres
+
+---
+
+## *Status*
+🚧 Em desenvolvimento
