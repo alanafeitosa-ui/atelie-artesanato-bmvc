@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% set titulo_pagina = "Novo Produto" if not produto else "Editar Produto" %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="formulario">
+        <h1 style="margin-bottom: 1.5rem; font-family: var(--fonte-titulo);">{{ titulo_pagina }}</h1>
+
+        {% if erros and erros|length > 0 %}
+        <div class="mensagem-erro">
+            Corrija os campos destacados abaixo.
+        </div>
+        {% endif %}
+
+        <form method="post">
+            <div class="grupo-formulario">
+                <label for="nome">Nome do Produto</label>
+                <input type="text" name="nome" id="nome" value="{{ dados.get('nome', '') }}" required>
+                {% if erros.get('nome') %}<span class="campo-erro">{{ erros['nome'] }}</span>{% endif %}
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="categoria">Categoria</label>
+                <input type="text" name="categoria" id="categoria" value="{{ dados.get('categoria', '') }}" required>
+                {% if erros.get('categoria') %}<span class="campo-erro">{{ erros['categoria'] }}</span>{% endif %}
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="preco">Preço (R$)</label>
+                <input type="number" step="0.01" name="preco" id="preco" value="{{ dados.get('preco', '') }}" required>
+                {% if erros.get('preco') %}<span class="campo-erro">{{ erros['preco'] }}</span>{% endif %}
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="tipo">Tipo</label>
+                <select name="tipo" id="tipo" {% if produto %}disabled{% endif %}>
+                    <option value="pronta_entrega" {% if dados.get('tipo') == 'pronta_entrega' %}selected{% endif %}>Pronta Entrega</option>
+                    <option value="encomenda" {% if dados.get('tipo') == 'encomenda' %}selected{% endif %}>Encomenda</option>
+                </select>
+                {% if erros.get('tipo') %}<span class="campo-erro">{{ erros['tipo'] }}</span>{% endif %}
+                {% if produto %}<input type="hidden" name="tipo" value="{{ dados.get('tipo') }}">{% endif %}
+            </div>
+
+            <!-- Campos condicionais -->
+            <div id="campos-pronta-entrega" style="display: none;">
+                <div class="grupo-formulario">
+                    <label for="quantidade_estoque">Quantidade em Estoque</label>
+                    <input type="number" name="quantidade_estoque" id="quantidade_estoque" value="{{ dados.get('quantidade_estoque', 0) }}">
+                    {% if erros.get('quantidade_estoque') %}<span class="campo-erro">{{ erros['quantidade_estoque'] }}</span>{% endif %}
+                </div>
+            </div>
+
+            <div id="campos-encomenda" style="display: none;">
+                <div class="grupo-formulario">
+                    <label for="prazo_entrega">Prazo de Entrega (dias)</label>
+                    <input type="number" name="prazo_entrega" id="prazo_entrega" value="{{ dados.get('prazo_entrega', 0) }}">
+                    {% if erros.get('prazo_entrega') %}<span class="campo-erro">{{ erros['prazo_entrega'] }}</span>{% endif %}
+                </div>
+                <div class="grupo-formulario">
+                    <label for="taxa_extra">Taxa Extra (R$)</label>
+                    <input type="number" step="0.01" name="taxa_extra" id="taxa_extra" value="{{ dados.get('taxa_extra', 0.0) }}">
+                    {% if erros.get('taxa_extra') %}<span class="campo-erro">{{ erros['taxa_extra'] }}</span>{% endif %}
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn">Salvar</button>
+                <a href="/produtos" class="btn btn-secundario">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleFields() {
+        const tipo = document.getElementById('tipo').value;
+        document.getElementById('campos-pronta-entrega').style.display = tipo === 'pronta_entrega' ? 'block' : 'none';
+        document.getElementById('campos-encomenda').style.display = tipo === 'encomenda' ? 'block' : 'none';
+    }
+    document.addEventListener('DOMContentLoaded', toggleFields);
+    document.getElementById('tipo').addEventListener('change', toggleFields);
+</script>
+{% endblock %}
