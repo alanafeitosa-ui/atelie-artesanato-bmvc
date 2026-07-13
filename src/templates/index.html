@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ateliê BMVC | Sistema de Gestão</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <header class="topo">
+        <div class="topo-conteudo">
+            <span class="marca">Ateliê <em>BMVC</em></span>
+            <nav class="navegacao">
+                <a href="#sobre">Sobre</a>
+                <a href="#modulos">Módulos</a>
+                <a href="{{ url_for('login') }}" class="botao-entrar">Entrar</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-conteudo">
+                <span class="etiqueta">sistema interno de gestão</span>
+                <h1>Cada linha, cada pedido,<br>cada peça — no lugar certo.</h1>
+                <p class="hero-texto">
+                    Uma casa digital para organizar produtos, clientes, pedidos e
+                    matéria-prima do seu ateliê, sem perder o fio da meada.
+                </p>
+                <a href="{{ url_for('login') }}" class="botao-principal">Acessar o sistema</a>
+            </div>
+            <div class="hero-ilustracao" aria-hidden="true">
+                <div class="forma forma-1"></div>
+                <div class="forma forma-2"></div>
+                <div class="forma forma-3"></div>
+            </div>
+        </section>
+
+        <section class="sobre" id="sobre">
+            <h2>Feito sob medida para o seu ofício</h2>
+            <p>
+                Diferente de uma loja virtual, este sistema não atende ao cliente final —
+                ele existe para você, artesã, acompanhar de perto cada etapa do seu negócio:
+                do fio na prateleira ao pedido entregue.
+            </p>
+        </section>
+
+        <section class="modulos" id="modulos">
+            <h2>O que você encontra aqui</h2>
+            <div class="grade-modulos">
+                <article class="cartao-modulo">
+                    <span class="icone-modulo">🧶</span>
+                    <h3>Produtos</h3>
+                    <p>Peças de pronta entrega e sob encomenda, com preço e estoque sempre atualizados.</p>
+                </article>
+                <article class="cartao-modulo">
+                    <span class="icone-modulo">🧵</span>
+                    <h3>Matéria-prima</h3>
+                    <p>Controle do que entra e sai do estoque, com alertas de reposição.</p>
+                </article>
+                <article class="cartao-modulo">
+                    <span class="icone-modulo">📋</span>
+                    <h3>Pedidos</h3>
+                    <p>Do primeiro contato à entrega, com status claro em cada etapa.</p>
+                </article>
+                <article class="cartao-modulo">
+                    <span class="icone-modulo">💛</span>
+                    <h3>Clientes</h3>
+                    <p>Um cadastro simples de quem confia no seu trabalho.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="rodape">
+        <p>Ateliê BMVC — Sistema de Gestão para Ateliê de Artesanato</p>
+        <p class="rodape-pequeno">Projeto acadêmico · Programação Orientada a Objetos</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

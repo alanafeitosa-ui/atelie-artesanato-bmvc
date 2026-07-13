@@ -52,7 +52,7 @@ Model
 src/
 |
 |--app.py
-|--controlers/
+|--controllers/
 |--models/
 |--boundary/
 |--database/
