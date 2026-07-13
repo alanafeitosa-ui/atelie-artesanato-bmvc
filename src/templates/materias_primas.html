@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% set titulo_pagina = "Matérias-primas" %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="titulo-pagina">
+        <h1>Matérias-primas</h1>
+        <a href="/materias_primas/criar" class="btn">+ Nova Matéria-prima</a>
+    </div>
+
+    <div class="grade-cards">
+        {% for mp in materias %}
+        <div class="card">
+            <span class="card-icone">🧵</span>
+            <h3>{{ mp.get_nome() }}</h3>
+            <div class="categoria">{{ mp.get_unidade_medida() }}</div>
+            <div class="info"><strong>Estoque:</strong> {{ mp.get_quantidade_estoque() }}</div>
+            <div class="info"><strong>Mínimo:</strong> {{ mp.get_estoque_minimo() }}</div>
+            <div class="preco">{{ mp.get_quantidade_estoque() }} {{ mp.get_unidade_medida() }}</div>
+            <div class="acoes">
+                <a href="/materias_primas/editar/{{ mp.get_id() }}" class="btn btn-secundario btn-sm">Editar</a>
+                <a href="/materias_primas/excluir/{{ mp.get_id() }}" class="btn btn-perigo btn-sm" onclick="return confirm('Excluir esta matéria-prima?')">Excluir</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
