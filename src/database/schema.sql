@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS produto_materia_prima (
 );
 CREATE TABLE IF NOT EXISTS pedido(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    cliente_id INTEGERNOT NULL,
+    cliente_id INTEGER NOT NULL,
     data_pedido TEXT DEFAULT CURRENT_TIMESTAMP,
     status TEXT DEFAULT 'Pendente' CHECK(status IN(
         'Pendente',
