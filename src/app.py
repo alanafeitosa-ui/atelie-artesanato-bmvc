@@ -109,11 +109,67 @@ def editar_materia_prima(id):
 
 @app.route("/pedidos")
 def listar_pedidos():
-    return "<h1>Pedidos (em construção)</h1><a href='/'>Voltar</a>"
+    try:
+        from controllers.pedido_controller import PedidoController
+        pedidos = PedidoController.listar_todos()
+    except Exception:
+        pedidos = []
+    return render_template("pedidos.html", pedidos=pedidos)
+
+@app.route("/pedidos/criar", methods=["GET", "POST"])
+def criar_pedido():
+    if request.method == "POST":
+        return redirect(url_for("listar_pedidos"))
+    try:
+        from controllers.cliente_controller import ClienteController
+        clientes = ClienteController.listar_todos()
+    except Exception:
+        clientes = []
+    try:
+        from controllers.produto_controller import ProdutoController
+        produtos = ProdutoController.listar_todos()
+    except Exception:
+        produtos = []
+    return render_template("form_pedido.html", erros={}, dados={}, clientes=clientes, produtos=produtos, itens=[])
+
+@app.route("/pedidos/editar/<int:id>", methods=["GET", "POST"])
+def editar_pedido(id):
+    if request.method == "POST":
+        return redirect(url_for("listar_pedidos"))
+    try:
+        from controllers.cliente_controller import ClienteController
+        clientes = ClienteController.listar_todos()
+    except Exception:
+        clientes = []
+    try:
+        from controllers.produto_controller import ProdutoController
+        produtos = ProdutoController.listar_todos()
+    except Exception:
+        produtos = []
+    pedido_ficticio = {"get_id": lambda: id, "get_status": lambda: "Pendente", "get_data_pedido": lambda: "", "get_valor_total": lambda: 0.0, "get_cliente": lambda: None}
+    return render_template("form_pedido.html", erros={}, dados={}, pedido=pedido_ficticio, clientes=clientes, produtos=produtos, itens=[])
 
 @app.route("/clientes")
 def listar_clientes():
-    return "<h1>Clientes (em construção)</h1><a href='/'>Voltar</a>"
+    try:
+        from controllers.cliente_controller import ClienteController
+        clientes = ClienteController.listar_todos()
+    except Exception:
+        clientes = []
+    return render_template("clientes.html", clientes=clientes)
+
+@app.route("/clientes/criar", methods=["GET", "POST"])
+def criar_cliente():
+    if request.method == "POST":
+        return redirect(url_for("listar_clientes"))
+    return render_template("form_cliente.html", erros={}, dados={})
+
+@app.route("/clientes/editar/<int:id>", methods=["GET", "POST"])
+def editar_cliente(id):
+    if request.method == "POST":
+        return redirect(url_for("listar_clientes"))
+    dados = {"nome": "Cliente Exemplo", "email": "", "telefone": "", "endereco": ""}
+    return render_template("form_cliente.html", erros={}, dados=dados, cliente={"get_id": lambda: id})
 
 if __name__ == "__main__":
     app.run(debug=True)

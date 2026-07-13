@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% set titulo_pagina = "Pedidos" %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="titulo-pagina">
+        <h1>Pedidos</h1>
+        <a href="/pedidos/criar" class="btn">+ Novo Pedido</a>
+    </div>
+
+    {% if pedidos %}
+    <div class="grade-cards">
+        {% for p in pedidos %}
+        <div class="card">
+            <span class="card-icone">📋</span>
+            <h3>Pedido #{{ p.get_id() }}</h3>
+            <div class="categoria">{{ p.get_status() }}</div>
+            <div class="info"><strong>Cliente:</strong> {{ p.get_cliente().get_nome() }}</div>
+            <div class="info"><strong>Data:</strong> {{ p.get_data_pedido() }}</div>
+            <div class="preco">R$ {{ "%.2f"|format(p.get_valor_total()) }}</div>
+            <div class="acoes">
+                <a href="/pedidos/editar/{{ p.get_id() }}" class="btn btn-secundario btn-sm">Editar</a>
+                <a href="/pedidos/excluir/{{ p.get_id() }}" class="btn btn-perigo btn-sm" onclick="return confirm('Excluir este pedido?')">Excluir</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 2rem;">Nenhum pedido cadastrado.</p>
+    {% endif %}
+</div>
+{% endblock %}
