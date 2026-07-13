@@ -1,0 +1,308 @@
+/* ===================================
+   ATELIÊ BMVC — Identidade Visual
+   Paleta inspirada em Limãozinho (Moranguinho: Tutti Frutti)
+   =================================== */
+
+:root {
+    --creme: #FFF9E8;
+    --amarelo-limao: #F4D35E;
+    --amarelo-limao-suave: #FBEAB3;
+    --verde-limao: #8AB339;
+    --verde-limao-escuro: #5E7D28;
+    --texto: #3A3226;
+    --coral: #E8734A;
+    --branco: #FFFFFF;
+
+    --fonte-titulo: 'Fraunces', serif;
+    --fonte-corpo: 'Nunito Sans', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--fonte-corpo);
+    background-color: var(--creme);
+    color: var(--texto);
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+h1, h2, h3 {
+    font-family: var(--fonte-titulo);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* ===== Cabeçalho ===== */
+
+.topo {
+    background-color: var(--creme);
+    border-bottom: 2px solid var(--amarelo-limao-suave);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.topo-conteudo {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.marca {
+    font-family: var(--fonte-titulo);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--verde-limao-escuro);
+}
+
+.marca em {
+    font-style: italic;
+    color: var(--coral);
+}
+
+.navegacao {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.navegacao a:hover {
+    color: var(--coral);
+}
+
+.botao-entrar {
+    background-color: var(--verde-limao);
+    color: var(--branco) !important;
+    padding: 0.55rem 1.3rem;
+    border-radius: 999px;
+    transition: background-color 0.2s ease;
+}
+
+.botao-entrar:hover {
+    background-color: var(--verde-limao-escuro);
+}
+
+/* ===== Hero ===== */
+
+.hero {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4.5rem 1.5rem 5rem;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2.5rem;
+    align-items: center;
+}
+
+.etiqueta {
+    display: inline-block;
+    background-color: var(--amarelo-limao-suave);
+    color: var(--verde-limao-escuro);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    margin-bottom: 1.25rem;
+}
+
+.hero h1 {
+    font-size: 2.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.hero-texto {
+    font-size: 1.1rem;
+    max-width: 32ch;
+    margin-bottom: 2rem;
+    color: #5c5344;
+}
+
+.botao-principal {
+    display: inline-block;
+    background-color: var(--coral);
+    color: var(--branco);
+    font-weight: 700;
+    padding: 0.9rem 2rem;
+    border-radius: 999px;
+    font-size: 1rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 6px 0 #b8532f;
+}
+
+.botao-principal:hover {
+    transform: translateY(-2px);
+}
+
+.hero-ilustracao {
+    position: relative;
+    height: 280px;
+}
+
+.forma {
+    position: absolute;
+    border-radius: 50%;
+}
+
+.forma-1 {
+    width: 220px;
+    height: 220px;
+    background-color: var(--amarelo-limao);
+    top: 10px;
+    left: 40px;
+}
+
+.forma-2 {
+    width: 140px;
+    height: 140px;
+    background-color: var(--verde-limao);
+    bottom: 0;
+    right: 30px;
+    opacity: 0.85;
+}
+
+.forma-3 {
+    width: 70px;
+    height: 70px;
+    background-color: var(--coral);
+    top: 60px;
+    right: 90px;
+    opacity: 0.9;
+}
+
+/* ===== Sobre ===== */
+
+.sobre {
+    background-color: var(--verde-limao-escuro);
+    color: var(--creme);
+    text-align: center;
+    padding: 4rem 1.5rem;
+}
+
+.sobre h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.sobre p {
+    max-width: 55ch;
+    margin: 0 auto;
+    font-size: 1.05rem;
+    opacity: 0.92;
+}
+
+/* ===== Módulos ===== */
+
+.modulos {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 1.5rem;
+}
+
+.modulos h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.grade-modulos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.cartao-modulo {
+    background-color: var(--branco);
+    border: 2px solid var(--amarelo-limao-suave);
+    border-radius: 18px;
+    padding: 1.75rem;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.cartao-modulo:hover {
+    border-color: var(--verde-limao);
+    transform: translateY(-4px);
+}
+
+.icone-modulo {
+    font-size: 1.75rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.cartao-modulo h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--verde-limao-escuro);
+}
+
+.cartao-modulo p {
+    font-size: 0.95rem;
+    color: #5c5344;
+}
+
+/* ===== Rodapé ===== */
+
+.rodape {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    border-top: 2px solid var(--amarelo-limao-suave);
+    font-size: 0.9rem;
+    color: #7a7060;
+}
+
+.rodape-pequeno {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    opacity: 0.8;
+}
+
+/* ===== Responsividade ===== */
+
+@media (max-width: 800px) {
+    .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding-top: 3rem;
+    }
+
+    .hero-texto {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-ilustracao {
+        order: -1;
+        height: 200px;
+    }
+
+    .navegacao {
+        gap: 1rem;
+        font-size: 0.85rem;
+    }
+
+    .hero h1 {
+        font-size: 2.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .navegacao a:not(.botao-entrar) {
+        display: none;
+    }
+}
