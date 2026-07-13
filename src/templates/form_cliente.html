@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% set titulo_pagina = "Novo Cliente" if not cliente else "Editar Cliente" %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="formulario">
+        <h1 style="margin-bottom: 1.5rem; font-family: var(--fonte-titulo);">{{ titulo_pagina }}</h1>
+
+        {% if erros and erros|length > 0 %}
+        <div class="mensagem-erro">
+            Corrija os campos destacados abaixo.
+        </div>
+        {% endif %}
+
+        <form method="post">
+            <div class="grupo-formulario">
+                <label for="nome">Nome</label>
+                <input type="text" name="nome" id="nome" value="{{ dados.get('nome', '') }}" required>
+                {% if erros.get('nome') %}<span class="campo-erro">{{ erros['nome'] }}</span>{% endif %}
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="email">E-mail</label>
+                <input type="email" name="email" id="email" value="{{ dados.get('email', '') }}">
+                {% if erros.get('email') %}<span class="campo-erro">{{ erros['email'] }}</span>{% endif %}
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="telefone">Telefone</label>
+                <input type="text" name="telefone" id="telefone" value="{{ dados.get('telefone', '') }}">
+                {% if erros.get('telefone') %}<span class="campo-erro">{{ erros['telefone'] }}</span>{% endif %}
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="endereco">Endereço</label>
+                <input type="text" name="endereco" id="endereco" value="{{ dados.get('endereco', '') }}">
+                {% if erros.get('endereco') %}<span class="campo-erro">{{ erros['endereco'] }}</span>{% endif %}
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn">Salvar</button>
+                <a href="/clientes" class="btn btn-secundario">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
