@@ -1,26 +1,19 @@
-from controllers.pedido_controller import PedidoController
-from models.pedido import Pedido
-from models.cliente import Cliente
-
 class PedidoBoundary:
+    @staticmethod
+    def validar_criacao(dados: dict) -> dict:
+        erros = {}
+        if not dados.get("cliente_id"):
+            erros["cliente_id"] = "Selecione um cliente."
+        if not dados.get("itens"):
+            erros["itens"] = "Adicione pelo menos um item."
+        else:
+            for i, item in enumerate(dados["itens"]):
+                if not item.get("produto_id") or not item.get("quantidade") or not item.get("preco_unitario"):
+                    erros["itens"] = f"Item {i+1} incompleto."
+                    break
+        return erros
 
     @staticmethod
-    def cadastrar(id: int, cliente: Cliente) -> None:
-        pedido = Pedido(id, cliente)
-        PedidoController.criar(pedido)
-
-    @staticmethod
-    def listar():
-        return PedidoController.listar()
-
-    @staticmethod
-    def buscar(id: int):
-        return PedidoController.buscar_por_id(id)
-
-    @staticmethod
-    def alterar_status(id: int, status):
-        return PedidoController.alterar_status(id, status)
-
-    @staticmethod
-    def excluir(id: int):
-        return PedidoController.excluir(id)
+    def validar_edicao(dados: dict) -> dict:
+        # mesma validação básica
+        return PedidoBoundary.validar_criacao(dados)

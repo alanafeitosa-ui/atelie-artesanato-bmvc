@@ -1,39 +1,30 @@
-from datetime import date
-from enum import Enum
-from models.cliente import Cliente
 from models.item_pedido import ItemPedido
 
-
-class StatusPedido(Enum):
-    PENDENTE = "PENDENTE"
-    EM_PRODUCAO = "EM_PRODUCAO"
-    FINALIZADO = "FINALIZADO"
-    ENTREGUE = "ENTREGUE"
-    CANCELADO = "CANCELADO"
-
 class Pedido:
-    def __init__(self, id: int, cliente: Cliente):
-        self.__id: int = id
-        self.__data: date = date.today()
-        self.__status: StatusPedido = StatusPedido.PENDENTE
-        self.__cliente: Cliente = cliente
-        self.__itens: list[ItemPedido] = []
+    def __init__(self, id: int, cliente_id: int, data_pedido: str, status: str, valor_total: float):
+        self.__id = id
+        self.__cliente_id = cliente_id
+        self.__data_pedido = data_pedido
+        self.__status = status
+        self.__valor_total = valor_total
+        self.__itens = []  # lista de ItemPedido
 
-    def get_id(self) -> int:
-        return self.__id
-    def get_data(self) -> date:
-        return self.__data
-    def get_status(self) -> StatusPedido:
-        return self.__status
-    def get_cliente(self) -> Cliente:
-        return self.__cliente
+    def get_id(self): return self.__id
+    def get_cliente_id(self): return self.__cliente_id
+    def get_data_pedido(self): return self.__data_pedido
+    def get_status(self): return self.__status
+    def get_valor_total(self): return self.__valor_total
+    def get_itens(self): return self.__itens
 
-    def get_itens(self) -> list[ItemPedido]:
-        return self.__itens
-    def calcular_total(self) -> float:
-        total = 0.0
-        for item in self.__itens:
-            total += item.calcular_subtotal()
-        return total
-    def alterar_status(self, novo_status: StatusPedido) -> None:
-        self.__status = novo_status
+    def set_status(self, status): self.__status = status
+    def set_itens(self, itens): self.__itens = itens
+
+    @classmethod
+    def from_row(cls, row):
+        return cls(
+            id=row["id"],
+            cliente_id=row["cliente_id"],
+            data_pedido=row["data_pedido"],
+            status=row["status"],
+            valor_total=row["valor_total"]
+        )
