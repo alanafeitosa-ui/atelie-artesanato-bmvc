@@ -16,7 +16,7 @@
             <span class="card-icone">📋</span>
             <h3>Pedido #{{ p.get_id() }}</h3>
             <div class="categoria">{{ p.get_status() }}</div>
-            <div class="info"><strong>Cliente:</strong> {{ p.get_cliente().get_nome() }}</div>
+            <div class="info"><strong>Cliente ID:</strong> {{ p.get_cliente_id() }}</div>
             <div class="info"><strong>Data:</strong> {{ p.get_data_pedido() }}</div>
             <div class="preco">R$ {{ "%.2f"|format(p.get_valor_total()) }}</div>
             <div class="acoes">

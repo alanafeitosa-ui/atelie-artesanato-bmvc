@@ -107,69 +107,146 @@ def editar_materia_prima(id):
     }
     return render_template("form_materia_prima.html", erros={}, dados=dados_iniciais, materia=materia)
 
-@app.route("/pedidos")
-def listar_pedidos():
-    try:
-        from controllers.pedido_controller import PedidoController
-        pedidos = PedidoController.listar_todos()
-    except Exception:
-        pedidos = []
-    return render_template("pedidos.html", pedidos=pedidos)
+@app.route("/materias_primas/excluir/<int:id>")
+def excluir_materia_prima(id):
+    from controllers.materia_prima_controller import MateriaPrimaController
+    MateriaPrimaController.excluir(id)
+    return redirect(url_for("listar_materias_primas"))
 
-@app.route("/pedidos/criar", methods=["GET", "POST"])
-def criar_pedido():
-    if request.method == "POST":
-        return redirect(url_for("listar_pedidos"))
-    try:
-        from controllers.cliente_controller import ClienteController
-        clientes = ClienteController.listar_todos()
-    except Exception:
-        clientes = []
-    try:
-        from controllers.produto_controller import ProdutoController
-        produtos = ProdutoController.listar_todos()
-    except Exception:
-        produtos = []
-    return render_template("form_pedido.html", erros={}, dados={}, clientes=clientes, produtos=produtos, itens=[])
-
-@app.route("/pedidos/editar/<int:id>", methods=["GET", "POST"])
-def editar_pedido(id):
-    if request.method == "POST":
-        return redirect(url_for("listar_pedidos"))
-    try:
-        from controllers.cliente_controller import ClienteController
-        clientes = ClienteController.listar_todos()
-    except Exception:
-        clientes = []
-    try:
-        from controllers.produto_controller import ProdutoController
-        produtos = ProdutoController.listar_todos()
-    except Exception:
-        produtos = []
-    pedido_ficticio = {"get_id": lambda: id, "get_status": lambda: "Pendente", "get_data_pedido": lambda: "", "get_valor_total": lambda: 0.0, "get_cliente": lambda: None}
-    return render_template("form_pedido.html", erros={}, dados={}, pedido=pedido_ficticio, clientes=clientes, produtos=produtos, itens=[])
-
+# ---------- CLIENTES ----------
 @app.route("/clientes")
 def listar_clientes():
-    try:
-        from controllers.cliente_controller import ClienteController
-        clientes = ClienteController.listar_todos()
-    except Exception:
-        clientes = []
+    from controllers.cliente_controller import ClienteController
+    clientes = ClienteController.listar_todos()
     return render_template("clientes.html", clientes=clientes)
 
 @app.route("/clientes/criar", methods=["GET", "POST"])
 def criar_cliente():
+    from controllers.cliente_controller import ClienteController
+    from boundary.cliente_boundary import ClienteBoundary
     if request.method == "POST":
-        return redirect(url_for("listar_clientes"))
+        dados = request.form.to_dict()
+        erros = ClienteBoundary.validar_criacao(dados)
+        if not erros:
+            ClienteController.criar(dados)
+            return redirect(url_for("listar_clientes"))
+        return render_template("form_cliente.html", erros=erros, dados=dados)
     return render_template("form_cliente.html", erros={}, dados={})
 
 @app.route("/clientes/editar/<int:id>", methods=["GET", "POST"])
 def editar_cliente(id):
+    from controllers.cliente_controller import ClienteController
+    from boundary.cliente_boundary import ClienteBoundary
+    cliente = ClienteController.buscar_por_id(id)
+    if not cliente:
+        return "Cliente não encontrado", 404
     if request.method == "POST":
-        return redirect(url_for("listar_clientes"))
-    dados = {"nome": "Cliente Exemplo", "email": "", "telefone": "", "endereco": ""}
-    return render_template("form_cliente.html", erros={}, dados=dados, cliente={"get_id": lambda: id})
+        dados = request.form.to_dict()
+        erros = ClienteBoundary.validar_edicao(dados)
+        if not erros:
+            cliente.set_nome(dados["nome"])
+            cliente.set_telefone(dados.get("telefone", ""))
+            cliente.set_email(dados.get("email", ""))
+            cliente.set_endereco(dados.get("endereco", ""))
+            ClienteController.atualizar(cliente)
+            return redirect(url_for("listar_clientes"))
+        return render_template("form_cliente.html", erros=erros, dados=dados, cliente=cliente)
+    dados_iniciais = {
+        "nome": cliente.get_nome(),
+        "telefone": cliente.get_telefone(),
+        "email": cliente.get_email(),
+        "endereco": cliente.get_endereco()
+    }
+    return render_template("form_cliente.html", erros={}, dados=dados_iniciais, cliente=cliente)
+
+@app.route("/clientes/excluir/<int:id>")
+def excluir_cliente(id):
+    from controllers.cliente_controller import ClienteController
+    ClienteController.excluir(id)
+    return redirect(url_for("listar_clientes"))
+
+# ---------- PEDIDOS ----------
+@app.route("/pedidos")
+def listar_pedidos():
+    from controllers.pedido_controller import PedidoController
+    pedidos = PedidoController.listar_todos()
+    return render_template("pedidos.html", pedidos=pedidos)
+
+@app.route("/pedidos/criar", methods=["GET", "POST"])
+def criar_pedido():
+    from controllers.pedido_controller import PedidoController
+    from controllers.cliente_controller import ClienteController
+    from controllers.produto_controller import ProdutoController
+    from boundary.pedido_boundary import PedidoBoundary
+    if request.method == "POST":
+        dados = request.form.to_dict()
+        # Listas de itens
+        produtos_ids = request.form.getlist("produto_id[]")
+        quantidades = request.form.getlist("quantidade[]")
+        precos = request.form.getlist("preco_unitario[]")
+        itens = []
+        for pid, qtd, prc in zip(produtos_ids, quantidades, precos):
+            itens.append({"produto_id": int(pid), "quantidade": int(qtd), "preco_unitario": float(prc)})
+        dados["itens"] = itens
+        erros = PedidoBoundary.validar_criacao(dados)
+        if not erros:
+            PedidoController.criar(dados)
+            return redirect(url_for("listar_pedidos"))
+        clientes = ClienteController.listar_todos()
+        produtos = ProdutoController.listar_todos()
+        return render_template("form_pedido.html", erros=erros, dados=dados,
+                               clientes=clientes, produtos=produtos, itens=itens)
+    clientes = ClienteController.listar_todos()
+    produtos = ProdutoController.listar_todos()
+    return render_template("form_pedido.html", erros={}, dados={},
+                           clientes=clientes, produtos=produtos, itens=[])
+
+@app.route("/pedidos/editar/<int:id>", methods=["GET", "POST"])
+def editar_pedido(id):
+    from controllers.pedido_controller import PedidoController
+    from controllers.cliente_controller import ClienteController
+    from controllers.produto_controller import ProdutoController
+    from boundary.pedido_boundary import PedidoBoundary
+    pedido = PedidoController.buscar_por_id(id)
+    if not pedido:
+        return "Pedido não encontrado", 404
+    if request.method == "POST":
+        dados = request.form.to_dict()
+        produtos_ids = request.form.getlist("produto_id[]")
+        quantidades = request.form.getlist("quantidade[]")
+        precos = request.form.getlist("preco_unitario[]")
+        itens = []
+        for pid, qtd, prc in zip(produtos_ids, quantidades, precos):
+            itens.append({"produto_id": int(pid), "quantidade": int(qtd), "preco_unitario": float(prc)})
+        dados["itens"] = itens
+        erros = PedidoBoundary.validar_edicao(dados)
+        if not erros:
+            pedido.set_status(dados.get("status", pedido.get_status()))
+            PedidoController.atualizar(pedido, itens)
+            return redirect(url_for("listar_pedidos"))
+        clientes = ClienteController.listar_todos()
+        produtos = ProdutoController.listar_todos()
+        return render_template("form_pedido.html", erros=erros, dados=dados,
+                               pedido=pedido, clientes=clientes, produtos=produtos, itens=itens)
+    # GET: preencher dados atuais
+    clientes = ClienteController.listar_todos()
+    produtos = ProdutoController.listar_todos()
+    itens_formatados = []
+    for item in pedido.get_itens():
+        itens_formatados.append({
+            "produto_id": item.get_produto_id(),
+            "quantidade": item.get_quantidade(),
+            "preco_unitario": item.get_preco_unitario()
+        })
+    dados = {"cliente_id": pedido.get_cliente_id(), "status": pedido.get_status()}
+    return render_template("form_pedido.html", erros={}, dados=dados,
+                           pedido=pedido, clientes=clientes, produtos=produtos, itens=itens_formatados)
+
+@app.route("/pedidos/excluir/<int:id>")
+def excluir_pedido(id):
+    from controllers.pedido_controller import PedidoController
+    PedidoController.excluir(id)
+    return redirect(url_for("listar_pedidos"))
 
 if __name__ == "__main__":
     app.run(debug=True)
