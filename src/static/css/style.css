@@ -306,3 +306,8 @@ h1, h2, h3 {
         display: none;
     }
 }
+a.cartao-modulo {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}

@@ -1,0 +1,164 @@
+/* ===== ESTILOS EXCLUSIVOS PARA PÁGINAS DE CRUD ===== */
+
+.container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.titulo-pagina {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.titulo-pagina h1 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+/* Botões */
+.btn {
+    display: inline-block;
+    font-weight: 700;
+    padding: 0.7rem 1.6rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+    cursor: pointer;
+    border: none;
+    color: white;
+    text-decoration: none;
+    background-color: var(--coral);
+    box-shadow: 0 4px 0 #b8532f;
+}
+.btn:hover {
+    transform: translateY(-2px);
+}
+.btn-secundario {
+    background-color: var(--verde-limao);
+    box-shadow: 0 4px 0 #4a6b1e;
+}
+.btn-perigo {
+    background-color: #d9534f;
+    box-shadow: 0 4px 0 #a12e2a;
+}
+.btn-sm {
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+}
+
+/* Grade de cards (igual aos módulos da landing page) */
+.grade-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.card {
+    background-color: var(--branco);
+    border: 2px solid var(--amarelo-limao-suave);
+    border-radius: 18px;
+    padding: 1.75rem;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+.card:hover {
+    border-color: var(--verde-limao);
+    transform: translateY(-4px);
+}
+
+.card-icone {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.card h3 {
+    font-family: var(--fonte-titulo);
+    font-size: 1.3rem;
+    color: var(--verde-limao-escuro);
+    margin-bottom: 0.3rem;
+}
+
+.card .categoria {
+    font-size: 0.85rem;
+    color: var(--coral);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.card .info {
+    font-size: 0.95rem;
+    color: #5c5344;
+    margin-bottom: 0.5rem;
+}
+
+.card .preco {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--verde-limao-escuro);
+    margin-bottom: 1rem;
+}
+
+.card .acoes {
+    margin-top: auto;
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Formulários (já estavam bonitos) */
+.formulario {
+    background-color: var(--branco);
+    border: 2px solid var(--amarelo-limao-suave);
+    border-radius: 18px;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 2rem auto;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.grupo-formulario {
+    margin-bottom: 1.5rem;
+}
+
+.grupo-formulario label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--verde-limao-escuro);
+}
+
+.grupo-formulario input,
+.grupo-formulario select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--amarelo-limao-suave);
+    border-radius: 12px;
+    font-family: var(--fonte-corpo);
+    font-size: 1rem;
+    background-color: var(--creme);
+    transition: border-color 0.2s;
+}
+
+.grupo-formulario input:focus,
+.grupo-formulario select:focus {
+    border-color: var(--verde-limao);
+    outline: none;
+}
+
+.campo-erro {
+    color: var(--coral);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.mensagem-erro {
+    background-color: #ffe8e0;
+    border-left: 4px solid var(--coral);
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}

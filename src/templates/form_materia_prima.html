@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% set titulo_pagina = "Nova Matéria-prima" if not materia else "Editar Matéria-prima" %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="formulario">
+        <h1 style="margin-bottom: 1.5rem; font-family: var(--fonte-titulo);">{{ titulo_pagina }}</h1>
+
+        {% if erros and erros|length > 0 %}
+        <div class="mensagem-erro">
+            Corrija os campos destacados abaixo.
+        </div>
+        {% endif %}
+
+        <form method="post">
+            <div class="grupo-formulario">
+                <label for="nome">Nome</label>
+                <input type="text" name="nome" id="nome" value="{{ dados.get('nome', '') }}" required>
+                {% if erros.get('nome') %}<span class="campo-erro">{{ erros['nome'] }}</span>{% endif %}
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="unidade_medida">Unidade de Medida</label>
+                <input type="text" name="unidade_medida" id="unidade_medida" value="{{ dados.get('unidade_medida', '') }}" required placeholder="Ex: metros, kg, unidades">
+                {% if erros.get('unidade_medida') %}<span class="campo-erro">{{ erros['unidade_medida'] }}</span>{% endif %}
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="quantidade_estoque">Quantidade em Estoque</label>
+                <input type="number" step="0.01" name="quantidade_estoque" id="quantidade_estoque" value="{{ dados.get('quantidade_estoque', 0.0) }}">
+                {% if erros.get('quantidade_estoque') %}<span class="campo-erro">{{ erros['quantidade_estoque'] }}</span>{% endif %}
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="estoque_minimo">Estoque Mínimo</label>
+                <input type="number" step="0.01" name="estoque_minimo" id="estoque_minimo" value="{{ dados.get('estoque_minimo', 0.0) }}">
+                {% if erros.get('estoque_minimo') %}<span class="campo-erro">{{ erros['estoque_minimo'] }}</span>{% endif %}
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn">Salvar</button>
+                <a href="/materias_primas" class="btn btn-secundario">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
