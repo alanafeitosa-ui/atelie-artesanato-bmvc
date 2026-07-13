@@ -15,12 +15,12 @@ CREATE TABLE IF NOT EXISTS cliente(
 CREATE TABLE IF NOT EXISTS produto(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
-    descricao TEXT,
     preco REAL NOT NULL,
-    tipo TEXT NOT NULL
-        CHECK(tipo IN ('pronta_entrega', 'encomenda')),
+    categoria TEXT NOT NULL,
+    tipo TEXT NOT NULL CHECK(tipo IN ('pronta_entrega', 'encomenda')),
     quantidade_estoque INTEGER DEFAULT 0,
-    prazo_producao INTEGER,
+    prazo_entrega INTEGER DEFAULT 0,
+    taxa_extra REAL DEFAULT 0.0,
     ativo INTEGER DEFAULT 1
 );
 CREATE TABLE IF NOT EXISTS materia_prima(

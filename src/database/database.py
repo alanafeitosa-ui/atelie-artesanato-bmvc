@@ -1,5 +1,5 @@
 import os 
-from src.database.connection import get_connection
+from connection import get_connection
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SCHEMA_PATH = os.path.join(BASE_DIR, "schema.sql")

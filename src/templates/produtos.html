@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% set titulo_pagina = "Produtos" %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="titulo-pagina">
+        <h1>Produtos</h1>
+        <a href="/produtos/criar" class="btn">+ Novo Produto</a>
+    </div>
+
+    <div class="grade-cards">
+        {% for p in produtos %}
+        <div class="card">
+            <span class="card-icone">{% if p.__class__.__name__ == 'ProdutoProntaEntrega' %}🛍️{% else %}🧶{% endif %}</span>
+            <h3>{{ p.get_nome() }}</h3>
+            <div class="categoria">{{ p.get_categoria() }}</div>
+            <div class="info">
+                <strong>Tipo:</strong> {{ "Pronta Entrega" if p.__class__.__name__ == 'ProdutoProntaEntrega' else "Encomenda" }}
+            </div>
+            {% if p.__class__.__name__ == 'ProdutoProntaEntrega' %}
+            <div class="info"><strong>Estoque:</strong> {{ p.get_quantidade_estoque() }}</div>
+            {% else %}
+            <div class="info"><strong>Prazo:</strong> {{ p.get_prazo_entrega() }} dias</div>
+            {% endif %}
+            <div class="preco">R$ {{ "%.2f"|format(p.calcular_preco_final()) }}</div>
+            <div class="acoes">
+                <a href="/produtos/editar/{{ p.get_id() }}" class="btn btn-secundario btn-sm">Editar</a>
+                <a href="/produtos/excluir/{{ p.get_id() }}" class="btn btn-perigo btn-sm" onclick="return confirm('Excluir este produto?')">Excluir</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

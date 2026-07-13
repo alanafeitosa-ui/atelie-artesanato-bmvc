@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% set titulo_pagina = "Clientes" %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="titulo-pagina">
+        <h1>Clientes</h1>
+        <a href="/clientes/criar" class="btn">+ Novo Cliente</a>
+    </div>
+
+    {% if clientes %}
+    <div class="grade-cards">
+        {% for c in clientes %}
+        <div class="card">
+            <span class="card-icone">💛</span>
+            <h3>{{ c.get_nome() }}</h3>
+            <div class="categoria">{{ c.get_email() or "Sem e-mail" }}</div>
+            <div class="info"><strong>Telefone:</strong> {{ c.get_telefone() or "—" }}</div>
+            <div class="info"><strong>Endereço:</strong> {{ c.get_endereco() or "—" }}</div>
+            <div class="acoes" style="margin-top: auto; padding-top: 1rem;">
+                <a href="/clientes/editar/{{ c.get_id() }}" class="btn btn-secundario btn-sm">Editar</a>
+                <a href="/clientes/excluir/{{ c.get_id() }}" class="btn btn-perigo btn-sm" onclick="return confirm('Excluir este cliente?')">Excluir</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center; font-size: 1.1rem; margin-top: 2rem;">Nenhum cliente cadastrado.</p>
+    {% endif %}
+</div>
+{% endblock %}

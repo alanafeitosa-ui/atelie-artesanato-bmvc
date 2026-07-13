@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ateliê BMVC | {{ titulo_pagina if titulo_pagina else "Sistema" }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="topo">
+        <div class="topo-conteudo">
+            <span class="marca">Ateliê <em>BMVC</em></span>
+            <nav class="navegacao">
+                <a href="/">Início</a>
+                <a href="/produtos">Produtos</a>
+                <a href="/materias_primas">Matérias-primas</a>
+                <a href="/clientes">Clientes</a>
+                <a href="/pedidos">Pedidos</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="rodape">
+        <p>Ateliê BMVC — Sistema de Gestão para Ateliê de Artesanato</p>
+        <p class="rodape-pequeno">Projeto acadêmico · Programação Orientada a Objetos</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
