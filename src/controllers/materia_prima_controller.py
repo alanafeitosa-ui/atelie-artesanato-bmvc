@@ -1,5 +1,6 @@
 from database.connection import get_connection
 from models.materiaPrima import MateriaPrima
+from websocket import socketio
 
 class MateriaPrimaController:
 
@@ -38,6 +39,13 @@ class MateriaPrimaController:
         ))
         conn.commit()
         novo_id = cursor.lastrowid
+
+        socketio.emit('estoque_atualizado', {
+            'tipo': 'materia_prima',
+            'id': novo_id,
+            'estoque': dados.get("quantidade_estoque", 0.0)
+        })
+
         conn.close()
         return novo_id
 
@@ -63,6 +71,13 @@ class MateriaPrimaController:
             materia_prima.get_id()
         ))
         conn.commit()
+
+        socketio.emit('estoque_atualizado', {
+            'tipo': 'materia_prima',
+            'id': materia_prima.get_id(),
+            'estoque': materia_prima.get_quantidade_estoque()
+        })
+
         conn.close()
 
     @staticmethod
@@ -71,4 +86,11 @@ class MateriaPrimaController:
         cursor = conn.cursor()
         cursor.execute("DELETE FROM materia_prima WHERE id = ?", (id,))
         conn.commit()
+
+        socketio.emit('estoque_atualizado', {
+            'tipo': 'materia_prima',
+            'id': id,
+            'estoque': 0  # matéria-prima removida
+        })
+
         conn.close()

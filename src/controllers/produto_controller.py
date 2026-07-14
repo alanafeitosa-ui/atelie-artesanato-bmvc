@@ -1,5 +1,6 @@
 from database.connection import get_connection
 from models.produto import Produto, ProdutoProntaEntrega, ProdutoEncomenda
+from websocket import socketio
 
 class ProdutoController:
 
@@ -41,6 +42,13 @@ class ProdutoController:
         ))
         conn.commit()
         novo_id = cursor.lastrowid
+
+        socketio.emit('estoque_atualizado', {
+            'tipo': 'materia_prima',
+            'id': novo_id,
+            'estoque': dados.get("quantidade_estoque", 0.0)
+        })
+
         conn.close()
         return novo_id
 
@@ -83,6 +91,13 @@ class ProdutoController:
         else:
             raise TypeError("Tipo de produto não suportado para atualização.")
         conn.commit()
+        if isinstance(produto, ProdutoProntaEntrega):
+            socketio.emit('estoque_atualizado', {
+                'tipo': 'produto',
+                'id': produto.get_id(),
+                'estoque': produto.get_quantidade_estoque()
+            })
+
         conn.close()
 
     @staticmethod
@@ -91,4 +106,10 @@ class ProdutoController:
         cursor = conn.cursor()
         cursor.execute("UPDATE produto SET ativo = 0 WHERE id = ?", (id,))
         conn.commit()
+        # Opcional: emitir que o produto foi removido (estoque zero)
+        socketio.emit('estoque_atualizado', {
+            'tipo': 'produto',
+            'id': id,
+            'estoque': 0  # não existe mais no ativo
+        })
         conn.close()
