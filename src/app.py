@@ -9,6 +9,23 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+def criar_admin_padrao():
+    from database.connection import get_connection   # <-- correção 1
+    from models.usuario import Usuario
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM usuarios WHERE login = ?", ("admin",))
+    if not cursor.fetchone():
+        usuario = Usuario(nome="Administrador", login="admin")
+        usuario.set_senha("123456")
+        cursor.execute(
+            "INSERT INTO usuarios (nome, login, senha_hash) VALUES (?, ?, ?)",
+            (usuario.get_nome(), usuario.get_login(), usuario.get_senha_hash())  # <-- correção 2
+        )
+        conn.commit()
+
+# Chamar logo após a definição
+criar_admin_padrao()
 @app.route("/")
 def index():
     return render_template("index.html")
