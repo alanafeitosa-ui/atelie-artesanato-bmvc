@@ -1,17 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from controllers.produto_controller import ProdutoController
 from controllers.materia_prima_controller import MateriaPrimaController
 from boundary.produto_boundary import ProdutoBoundary
 from boundary.materia_prima_boundary import MateriaPrimaBoundary
 from models.produto import ProdutoProntaEntrega, ProdutoEncomenda
+from models.usuario import Usuario
+import os
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 @app.route("/")
 def index():
     return render_template("index.html")
-@app.route("/login")
-def login():
-    return "Login em construção"
 @app.route("/produtos")
 def listar_produtos():
     produtos = ProdutoController.listar_todos()
@@ -187,8 +187,8 @@ def criar_pedido():
         itens = []
         for pid, qtd, prc in zip(produtos_ids, quantidades, precos):
             itens.append({"produto_id": int(pid), "quantidade": int(qtd), "preco_unitario": float(prc)})
-        dados["itens"] = itens
-        erros = PedidoBoundary.validar_criacao(dados)
+        payload = {**dados, "itens": itens}
+        erros = PedidoBoundary.validar_criacao(payload)
         if not erros:
             PedidoController.criar(dados)
             return redirect(url_for("listar_pedidos"))
@@ -218,8 +218,8 @@ def editar_pedido(id):
         itens = []
         for pid, qtd, prc in zip(produtos_ids, quantidades, precos):
             itens.append({"produto_id": int(pid), "quantidade": int(qtd), "preco_unitario": float(prc)})
-        dados["itens"] = itens
-        erros = PedidoBoundary.validar_edicao(dados)
+        payload = {**dados, "itens": itens}
+        erros = PedidoBoundary.validar_edicao(payload)
         if not erros:
             pedido.set_status(dados.get("status", pedido.get_status()))
             PedidoController.atualizar(pedido, itens)
@@ -247,6 +247,33 @@ def excluir_pedido(id):
     from controllers.pedido_controller import PedidoController
     PedidoController.excluir(id)
     return redirect(url_for("listar_pedidos"))
+
+# ---------- AUTENTICAÇÃO ----------
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        usuario = Usuario.autenticar(
+            request.form["login"],
+            request.form["senha"]
+        )
+        if usuario:
+            session["usuario_id"] = usuario.get_id()
+            session["usuario_nome"] = usuario.get_nome()
+            return redirect(url_for("painel_admin"))
+        else:
+            return render_template("login.html", erro="Login ou senha inválidos.")
+    return render_template("login.html", erro=None)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
+# Painel administrativo (exige login – decorator será adicionado por Yasmim)
+@app.route("/admin")
+def painel_admin():
+    # O decorator login_required protegerá esta rota
+    return render_template("admin.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
