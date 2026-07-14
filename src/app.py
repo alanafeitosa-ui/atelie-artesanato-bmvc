@@ -7,11 +7,13 @@ from boundary.materia_prima_boundary import MateriaPrimaBoundary
 from models.produto import ProdutoProntaEntrega, ProdutoEncomenda
 from models.usuario import Usuario
 from functools import wraps
+from websocket import socketio
 import os
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 socketio = SocketIO(app, cors_allowed_origins="*")
+socketio.init_app(app)
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
