@@ -1,23 +1,50 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from controllers.produto_controller import ProdutoController
 from controllers.materia_prima_controller import MateriaPrimaController
 from boundary.produto_boundary import ProdutoBoundary
 from boundary.materia_prima_boundary import MateriaPrimaBoundary
 from models.produto import ProdutoProntaEntrega, ProdutoEncomenda
+from models.usuario import Usuario
+from functools import wraps
+import os
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "usuario_id" not in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def criar_admin_padrao():
+    from database.connection import get_connection   # <-- correção 1
+    from models.usuario import Usuario
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM usuarios WHERE login = ?", ("admin",))
+    if not cursor.fetchone():
+        usuario = Usuario(nome="Administrador", login="admin")
+        usuario.set_senha("123456")
+        cursor.execute(
+            "INSERT INTO usuarios (nome, login, senha_hash) VALUES (?, ?, ?)",
+            (usuario.get_nome(), usuario.get_login(), usuario.get_senha_hash())  # <-- correção 2
+        )
+        conn.commit()
+
+criar_admin_padrao()
 @app.route("/")
 def index():
     return render_template("index.html")
-@app.route("/login")
-def login():
-    return "Login em construção"
 @app.route("/produtos")
+@login_required
 def listar_produtos():
     produtos = ProdutoController.listar_todos()
     return render_template("produtos.html", produtos=produtos)
 
 @app.route("/produtos/criar", methods=["GET", "POST"])
+@login_required
 def criar_produto():
     if request.method == "POST":
         dados = request.form.to_dict()
@@ -29,6 +56,7 @@ def criar_produto():
     return render_template("form_produto.html", erros={}, dados={})
 
 @app.route("/produtos/editar/<int:id>", methods=["GET", "POST"])
+@login_required
 def editar_produto(id):
     produto = ProdutoController.buscar_por_id(id)
     if not produto:
@@ -63,16 +91,19 @@ def editar_produto(id):
     return render_template("form_produto.html", erros={}, dados=dados_iniciais, produto=produto)
 
 @app.route("/produtos/excluir/<int:id>")
+@login_required
 def excluir_produto(id):
     ProdutoController.excluir(id)
     return redirect(url_for("listar_produtos"))
 
 @app.route("/materias_primas")
+@login_required
 def listar_materias_primas():
     materias = MateriaPrimaController.listar_todas()
     return render_template("materias_primas.html", materias=materias)
 
 @app.route("/materias_primas/criar", methods=["GET", "POST"])
+@login_required
 def criar_materia_prima():
     if request.method == "POST":
         dados = request.form.to_dict()
@@ -84,6 +115,7 @@ def criar_materia_prima():
     return render_template("form_materia_prima.html", erros={}, dados={})
 
 @app.route("/materias_primas/editar/<int:id>", methods=["GET", "POST"])
+@login_required
 def editar_materia_prima(id):
     materia = MateriaPrimaController.buscar_por_id(id)
     if not materia:
@@ -108,6 +140,7 @@ def editar_materia_prima(id):
     return render_template("form_materia_prima.html", erros={}, dados=dados_iniciais, materia=materia)
 
 @app.route("/materias_primas/excluir/<int:id>")
+@login_required
 def excluir_materia_prima(id):
     from controllers.materia_prima_controller import MateriaPrimaController
     MateriaPrimaController.excluir(id)
@@ -115,12 +148,14 @@ def excluir_materia_prima(id):
 
 # ---------- CLIENTES ----------
 @app.route("/clientes")
+@login_required
 def listar_clientes():
     from controllers.cliente_controller import ClienteController
     clientes = ClienteController.listar_todos()
     return render_template("clientes.html", clientes=clientes)
 
 @app.route("/clientes/criar", methods=["GET", "POST"])
+@login_required
 def criar_cliente():
     from controllers.cliente_controller import ClienteController
     from boundary.cliente_boundary import ClienteBoundary
@@ -134,6 +169,7 @@ def criar_cliente():
     return render_template("form_cliente.html", erros={}, dados={})
 
 @app.route("/clientes/editar/<int:id>", methods=["GET", "POST"])
+@login_required
 def editar_cliente(id):
     from controllers.cliente_controller import ClienteController
     from boundary.cliente_boundary import ClienteBoundary
@@ -160,6 +196,7 @@ def editar_cliente(id):
     return render_template("form_cliente.html", erros={}, dados=dados_iniciais, cliente=cliente)
 
 @app.route("/clientes/excluir/<int:id>")
+@login_required
 def excluir_cliente(id):
     from controllers.cliente_controller import ClienteController
     ClienteController.excluir(id)
@@ -167,12 +204,14 @@ def excluir_cliente(id):
 
 # ---------- PEDIDOS ----------
 @app.route("/pedidos")
+@login_required
 def listar_pedidos():
     from controllers.pedido_controller import PedidoController
     pedidos = PedidoController.listar_todos()
     return render_template("pedidos.html", pedidos=pedidos)
 
 @app.route("/pedidos/criar", methods=["GET", "POST"])
+@login_required
 def criar_pedido():
     from controllers.pedido_controller import PedidoController
     from controllers.cliente_controller import ClienteController
@@ -180,15 +219,14 @@ def criar_pedido():
     from boundary.pedido_boundary import PedidoBoundary
     if request.method == "POST":
         dados = request.form.to_dict()
-        # Listas de itens
         produtos_ids = request.form.getlist("produto_id[]")
         quantidades = request.form.getlist("quantidade[]")
         precos = request.form.getlist("preco_unitario[]")
         itens = []
         for pid, qtd, prc in zip(produtos_ids, quantidades, precos):
             itens.append({"produto_id": int(pid), "quantidade": int(qtd), "preco_unitario": float(prc)})
-        dados["itens"] = itens
-        erros = PedidoBoundary.validar_criacao(dados)
+        payload = {**dados, "itens": itens}
+        erros = PedidoBoundary.validar_criacao(payload)
         if not erros:
             PedidoController.criar(dados)
             return redirect(url_for("listar_pedidos"))
@@ -202,6 +240,7 @@ def criar_pedido():
                            clientes=clientes, produtos=produtos, itens=[])
 
 @app.route("/pedidos/editar/<int:id>", methods=["GET", "POST"])
+@login_required
 def editar_pedido(id):
     from controllers.pedido_controller import PedidoController
     from controllers.cliente_controller import ClienteController
@@ -218,8 +257,8 @@ def editar_pedido(id):
         itens = []
         for pid, qtd, prc in zip(produtos_ids, quantidades, precos):
             itens.append({"produto_id": int(pid), "quantidade": int(qtd), "preco_unitario": float(prc)})
-        dados["itens"] = itens
-        erros = PedidoBoundary.validar_edicao(dados)
+        payload = {**dados, "itens": itens}
+        erros = PedidoBoundary.validar_edicao(payload)
         if not erros:
             pedido.set_status(dados.get("status", pedido.get_status()))
             PedidoController.atualizar(pedido, itens)
@@ -228,7 +267,6 @@ def editar_pedido(id):
         produtos = ProdutoController.listar_todos()
         return render_template("form_pedido.html", erros=erros, dados=dados,
                                pedido=pedido, clientes=clientes, produtos=produtos, itens=itens)
-    # GET: preencher dados atuais
     clientes = ClienteController.listar_todos()
     produtos = ProdutoController.listar_todos()
     itens_formatados = []
@@ -243,10 +281,38 @@ def editar_pedido(id):
                            pedido=pedido, clientes=clientes, produtos=produtos, itens=itens_formatados)
 
 @app.route("/pedidos/excluir/<int:id>")
+@login_required
 def excluir_pedido(id):
     from controllers.pedido_controller import PedidoController
     PedidoController.excluir(id)
     return redirect(url_for("listar_pedidos"))
+
+# ---------- AUTENTICAÇÃO ----------
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        usuario = Usuario.autenticar(
+            request.form["login"],
+            request.form["senha"]
+        )
+        if usuario:
+            session["usuario_id"] = usuario.get_id()
+            session["usuario_nome"] = usuario.get_nome()
+            return redirect(url_for("painel_admin"))
+        else:
+            return render_template("login.html", erro="Login ou senha inválidos.")
+    return render_template("login.html", erro=None)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
+
+# Painel administrativo (exige login – decorator será adicionado por Yasmim)
+@app.route("/admin")
+def painel_admin():
+    # O decorator login_required protegerá esta rota
+    return render_template("admin.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Painel Administrativo{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-welcome">
+    <h1>Bem‑vinda, {{ session.usuario_nome }}</h1>
+    <p class="sub">O que você quer gerenciar hoje?</p>
+</div>
+
+<div class="dashboard-grid">
+    <a href="{{ url_for('listar_produtos') }}" class="dash-card">
+        <div class="dash-icon">P</div>
+        <h3>Produtos</h3>
+    </a>
+    <a href="{{ url_for('listar_materias_primas') }}" class="dash-card">
+        <div class="dash-icon">M</div>
+        <h3>Matérias‑primas</h3>
+    </a>
+    <a href="{{ url_for('listar_clientes') }}" class="dash-card">
+        <div class="dash-icon">C</div>
+        <h3>Clientes</h3>
+    </a>
+    <a href="{{ url_for('listar_pedidos') }}" class="dash-card">
+        <div class="dash-icon">Pd</div>
+        <h3>Pedidos</h3>
+    </a>
+</div>
+{% endblock %}
