@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Painel Administrativo{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Bem-vindo, {{ session.usuario_nome }}!</h2>
+    <div class="row mt-4">
+        <div class="col-md-3"><a href="{{ url_for('listar_produtos') }}" class="btn btn-outline-primary w-100 mb-2">Produtos</a></div>
+        <div class="col-md-3"><a href="{{ url_for('listar_materias_primas') }}" class="btn btn-outline-primary w-100 mb-2">Matérias-primas</a></div>
+        <div class="col-md-3"><a href="{{ url_for('listar_clientes') }}" class="btn btn-outline-primary w-100 mb-2">Clientes</a></div>
+        <div class="col-md-3"><a href="{{ url_for('listar_pedidos') }}" class="btn btn-outline-primary w-100 mb-2">Pedidos</a></div>
+    </div>
+</div>
+{% endblock %}
