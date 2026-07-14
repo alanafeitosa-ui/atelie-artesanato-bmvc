@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from flask_socketio import SocketIO, emit
 from controllers.produto_controller import ProdutoController
 from controllers.materia_prima_controller import MateriaPrimaController
 from boundary.produto_boundary import ProdutoBoundary
@@ -10,6 +11,7 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+socketio = SocketIO(app, cors_allowed_origins="*")
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -308,11 +310,10 @@ def logout():
     session.clear()
     return redirect(url_for("index"))
 
-# Painel administrativo (exige login – decorator será adicionado por Yasmim)
 @app.route("/admin")
+@login_required
 def painel_admin():
-    # O decorator login_required protegerá esta rota
     return render_template("admin.html")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)
