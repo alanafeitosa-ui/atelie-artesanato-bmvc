@@ -20,6 +20,12 @@
                 <a href="/materias_primas">Matérias-primas</a>
                 <a href="/clientes">Clientes</a>
                 <a href="/pedidos">Pedidos</a>
+                {% if session.usuario_id %}
+                    <a href="{{ url_for('painel_admin') }}">Painel</a>
+                    <a href="{{ url_for('logout') }}">Sair ({{ session.usuario_nome }})</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                {% endif %}
             </nav>
         </div>
     </header>
