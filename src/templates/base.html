@@ -15,18 +15,27 @@
         <div class="topo-conteudo">
             <span class="marca">Ateliê <em>BMVC</em></span>
             <nav class="navegacao">
-                <a href="/">Início</a>
-                <a href="/produtos">Produtos</a>
-                <a href="/materias_primas">Matérias-primas</a>
-                <a href="/clientes">Clientes</a>
-                <a href="/pedidos">Pedidos</a>
-                {% if session.usuario_id %}
-                    <a href="{{ url_for('painel_admin') }}">Painel</a>
-                    <a href="{{ url_for('logout') }}">Sair ({{ session.usuario_nome }})</a>
-                {% else %}
-                    <a href="{{ url_for('login') }}">Login</a>
-                {% endif %}
-            </nav>
+    {% if session.usuario_id %}
+        {% if request.endpoint in ['listar_produtos', 'criar_produto', 'editar_produto', 
+                                   'listar_materias_primas', 'criar_materia_prima', 'editar_materia_prima',
+                                   'listar_clientes', 'criar_cliente', 'editar_cliente',
+                                   'listar_pedidos', 'criar_pedido', 'editar_pedido'] %}
+            <a href="{{ url_for('listar_produtos') }}">Produtos</a>
+            <a href="{{ url_for('listar_materias_primas') }}">Matérias-primas</a>
+            <a href="{{ url_for('listar_clientes') }}">Clientes</a>
+            <a href="{{ url_for('listar_pedidos') }}">Pedidos</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Sair</a>
+    {% else %}
+        {% if request.endpoint == 'index' %}
+            <a href="#sobre">Sobre</a>
+            <a href="#modulos">Módulos</a>
+            <a href="{{ url_for('login') }}" class="botao-entrar">Entrar</a>
+        {% elif request.endpoint == 'login' %}
+            <a href="{{ url_for('index') }}">Início</a>
+        {% endif %}
+    {% endif %}
+        </nav>
         </div>
     </header>
 
