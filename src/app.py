@@ -5,10 +5,19 @@ from boundary.produto_boundary import ProdutoBoundary
 from boundary.materia_prima_boundary import MateriaPrimaBoundary
 from models.produto import ProdutoProntaEntrega, ProdutoEncomenda
 from models.usuario import Usuario
+from functools import wraps
 import os
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "usuario_id" not in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
+
 def criar_admin_padrao():
     from database.connection import get_connection   # <-- correção 1
     from models.usuario import Usuario
@@ -24,17 +33,18 @@ def criar_admin_padrao():
         )
         conn.commit()
 
-# Chamar logo após a definição
 criar_admin_padrao()
 @app.route("/")
 def index():
     return render_template("index.html")
 @app.route("/produtos")
+@login_required
 def listar_produtos():
     produtos = ProdutoController.listar_todos()
     return render_template("produtos.html", produtos=produtos)
 
 @app.route("/produtos/criar", methods=["GET", "POST"])
+@login_required
 def criar_produto():
     if request.method == "POST":
         dados = request.form.to_dict()
@@ -46,6 +56,7 @@ def criar_produto():
     return render_template("form_produto.html", erros={}, dados={})
 
 @app.route("/produtos/editar/<int:id>", methods=["GET", "POST"])
+@login_required
 def editar_produto(id):
     produto = ProdutoController.buscar_por_id(id)
     if not produto:
@@ -80,16 +91,19 @@ def editar_produto(id):
     return render_template("form_produto.html", erros={}, dados=dados_iniciais, produto=produto)
 
 @app.route("/produtos/excluir/<int:id>")
+@login_required
 def excluir_produto(id):
     ProdutoController.excluir(id)
     return redirect(url_for("listar_produtos"))
 
 @app.route("/materias_primas")
+@login_required
 def listar_materias_primas():
     materias = MateriaPrimaController.listar_todas()
     return render_template("materias_primas.html", materias=materias)
 
 @app.route("/materias_primas/criar", methods=["GET", "POST"])
+@login_required
 def criar_materia_prima():
     if request.method == "POST":
         dados = request.form.to_dict()
@@ -101,6 +115,7 @@ def criar_materia_prima():
     return render_template("form_materia_prima.html", erros={}, dados={})
 
 @app.route("/materias_primas/editar/<int:id>", methods=["GET", "POST"])
+@login_required
 def editar_materia_prima(id):
     materia = MateriaPrimaController.buscar_por_id(id)
     if not materia:
@@ -125,6 +140,7 @@ def editar_materia_prima(id):
     return render_template("form_materia_prima.html", erros={}, dados=dados_iniciais, materia=materia)
 
 @app.route("/materias_primas/excluir/<int:id>")
+@login_required
 def excluir_materia_prima(id):
     from controllers.materia_prima_controller import MateriaPrimaController
     MateriaPrimaController.excluir(id)
@@ -132,12 +148,14 @@ def excluir_materia_prima(id):
 
 # ---------- CLIENTES ----------
 @app.route("/clientes")
+@login_required
 def listar_clientes():
     from controllers.cliente_controller import ClienteController
     clientes = ClienteController.listar_todos()
     return render_template("clientes.html", clientes=clientes)
 
 @app.route("/clientes/criar", methods=["GET", "POST"])
+@login_required
 def criar_cliente():
     from controllers.cliente_controller import ClienteController
     from boundary.cliente_boundary import ClienteBoundary
@@ -151,6 +169,7 @@ def criar_cliente():
     return render_template("form_cliente.html", erros={}, dados={})
 
 @app.route("/clientes/editar/<int:id>", methods=["GET", "POST"])
+@login_required
 def editar_cliente(id):
     from controllers.cliente_controller import ClienteController
     from boundary.cliente_boundary import ClienteBoundary
@@ -177,6 +196,7 @@ def editar_cliente(id):
     return render_template("form_cliente.html", erros={}, dados=dados_iniciais, cliente=cliente)
 
 @app.route("/clientes/excluir/<int:id>")
+@login_required
 def excluir_cliente(id):
     from controllers.cliente_controller import ClienteController
     ClienteController.excluir(id)
@@ -184,12 +204,14 @@ def excluir_cliente(id):
 
 # ---------- PEDIDOS ----------
 @app.route("/pedidos")
+@login_required
 def listar_pedidos():
     from controllers.pedido_controller import PedidoController
     pedidos = PedidoController.listar_todos()
     return render_template("pedidos.html", pedidos=pedidos)
 
 @app.route("/pedidos/criar", methods=["GET", "POST"])
+@login_required
 def criar_pedido():
     from controllers.pedido_controller import PedidoController
     from controllers.cliente_controller import ClienteController
@@ -197,7 +219,6 @@ def criar_pedido():
     from boundary.pedido_boundary import PedidoBoundary
     if request.method == "POST":
         dados = request.form.to_dict()
-        # Listas de itens
         produtos_ids = request.form.getlist("produto_id[]")
         quantidades = request.form.getlist("quantidade[]")
         precos = request.form.getlist("preco_unitario[]")
@@ -219,6 +240,7 @@ def criar_pedido():
                            clientes=clientes, produtos=produtos, itens=[])
 
 @app.route("/pedidos/editar/<int:id>", methods=["GET", "POST"])
+@login_required
 def editar_pedido(id):
     from controllers.pedido_controller import PedidoController
     from controllers.cliente_controller import ClienteController
@@ -245,7 +267,6 @@ def editar_pedido(id):
         produtos = ProdutoController.listar_todos()
         return render_template("form_pedido.html", erros=erros, dados=dados,
                                pedido=pedido, clientes=clientes, produtos=produtos, itens=itens)
-    # GET: preencher dados atuais
     clientes = ClienteController.listar_todos()
     produtos = ProdutoController.listar_todos()
     itens_formatados = []
@@ -260,6 +281,7 @@ def editar_pedido(id):
                            pedido=pedido, clientes=clientes, produtos=produtos, itens=itens_formatados)
 
 @app.route("/pedidos/excluir/<int:id>")
+@login_required
 def excluir_pedido(id):
     from controllers.pedido_controller import PedidoController
     PedidoController.excluir(id)
@@ -284,7 +306,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("login"))
+    return redirect(url_for("index"))
 
 # Painel administrativo (exige login – decorator será adicionado por Yasmim)
 @app.route("/admin")
