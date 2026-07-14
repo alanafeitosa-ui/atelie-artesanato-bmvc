@@ -61,3 +61,9 @@ CREATE TABLE IF NOT EXISTS item_pedido(
     FOREIGN KEY(pedido_id) REFERENCES pedido(id) ON DELETE CASCADE,
     FOREIGN KEY(produto_id) REFERENCES produto(id)
 );
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    login TEXT NOT NULL UNIQUE,
+    senha_hash TEXT NOT NULL
+);
