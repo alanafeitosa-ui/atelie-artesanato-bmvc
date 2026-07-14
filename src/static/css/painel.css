@@ -162,3 +162,216 @@
     border-radius: 12px;
     margin-bottom: 1.5rem;
 }
+/* ===================================
+   PAINEL & LOGIN — Paleta Limãozinho
+   =================================== */
+
+/* Fundo padrão da área administrativa (já é #FFF9E8 do body, mantemos) */
+
+/* ========== LOGIN ========== */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 2rem 1rem;
+}
+
+.login-card {
+    background: var(--branco);
+    padding: 2.5rem 2rem;
+    border-radius: 24px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    border: 2px solid var(--amarelo-limao-suave);
+}
+
+.login-card h2 {
+    font-family: var(--fonte-titulo);
+    font-weight: 600;
+    font-size: 2rem;
+    color: var(--verde-limao-escuro);
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.4rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--texto);
+    font-family: var(--fonte-corpo);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid var(--amarelo-limao-suave);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: var(--fonte-corpo);
+    background: var(--creme);
+    color: var(--texto);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--verde-limao);
+    box-shadow: 0 0 0 3px rgba(138, 179, 57, 0.2);
+}
+
+.btn-login {
+    background: var(--verde-limao);
+    color: var(--branco);
+    border: none;
+    padding: 0.9rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.5rem;
+    transition: background 0.2s, transform 0.1s;
+    font-family: var(--fonte-corpo);
+    box-shadow: 0 4px 0 var(--verde-limao-escuro);
+}
+
+.btn-login:hover {
+    background: var(--verde-limao-escuro);
+    transform: translateY(-1px);
+}
+
+.btn-login:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 0 var(--verde-limao-escuro);
+}
+
+.alert-danger {
+    background: #FFF0ED;
+    color: #B8381A;
+    padding: 0.8rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    border: 1px solid #FECAC2;
+    font-family: var(--fonte-corpo);
+}
+
+/* ========== ADMIN DASHBOARD ========== */
+.admin-welcome {
+    text-align: center;
+    margin: 3rem 0 2rem;
+}
+
+.admin-welcome h1 {
+    font-family: var(--fonte-titulo);
+    font-weight: 600;
+    font-size: 2.5rem;
+    color: var(--verde-limao-escuro);
+    margin-bottom: 0.3rem;
+}
+
+.admin-welcome .sub {
+    font-family: var(--fonte-corpo);
+    color: var(--texto);
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    max-width: 750px;
+    margin: 0 auto 3rem;
+    padding: 0 1rem;
+}
+
+/* Cartão caseiro e alegre */
+.dash-card {
+    background: var(--branco);
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--texto);
+    transition: all 0.3s ease;
+    border: 2px solid var(--amarelo-limao-suave);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Micro ilustração com círculos da identidade visual */
+.dash-card::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 32px;
+    height: 32px;
+    background: var(--amarelo-limao);
+    border-radius: 50%;
+    opacity: 0.8;
+}
+
+.dash-card::after {
+    content: '';
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    width: 20px;
+    height: 20px;
+    background: var(--verde-limao);
+    border-radius: 50%;
+    opacity: 0.6;
+}
+
+.dash-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 30px rgba(138, 179, 57, 0.15);
+    border-color: var(--verde-limao);
+}
+
+.dash-card:hover::before {
+    background: var(--coral);
+    opacity: 0.9;
+}
+
+.dash-card:hover::after {
+    background: var(--amarelo-limao);
+    opacity: 1;
+}
+
+/* Ícone substituído por uma letra estilizada ou símbolo */
+.dash-icon {
+    font-family: var(--fonte-titulo);
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--verde-limao-escuro);
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.dash-card h3 {
+    font-family: var(--fonte-titulo);
+    font-weight: 600;
+    font-size: 1.3rem;
+    margin: 0.4rem 0;
+    color: var(--verde-limao-escuro);
+    position: relative;
+    z-index: 1;
+}
