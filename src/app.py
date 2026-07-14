@@ -5,10 +5,19 @@ from boundary.produto_boundary import ProdutoBoundary
 from boundary.materia_prima_boundary import MateriaPrimaBoundary
 from models.produto import ProdutoProntaEntrega, ProdutoEncomenda
 from models.usuario import Usuario
+from functools import wraps
 import os
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "usuario_id" not in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
+
 def criar_admin_padrao():
     from database.connection import get_connection   # <-- correção 1
     from models.usuario import Usuario
@@ -24,7 +33,6 @@ def criar_admin_padrao():
         )
         conn.commit()
 
-# Chamar logo após a definição
 criar_admin_padrao()
 @app.route("/")
 def index():
