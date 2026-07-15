@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% set titulo_pagina = "Produtos" %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/websocket.css') }}">
+{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -11,7 +14,7 @@
 
     <div class="grade-cards">
         {% for p in produtos %}
-        <div class="card">
+        <div class="card" {% if p.__class__.__name__ == 'ProdutoProntaEntrega' %}data-produto-id="{{ p.get_id() }}"{% endif %}>
             <span class="card-icone">{% if p.__class__.__name__ == 'ProdutoProntaEntrega' %}🛍️{% else %}🧶{% endif %}</span>
             <h3>{{ p.get_nome() }}</h3>
             <div class="categoria">{{ p.get_categoria() }}</div>
@@ -19,7 +22,7 @@
                 <strong>Tipo:</strong> {{ "Pronta Entrega" if p.__class__.__name__ == 'ProdutoProntaEntrega' else "Encomenda" }}
             </div>
             {% if p.__class__.__name__ == 'ProdutoProntaEntrega' %}
-            <div class="info"><strong>Estoque:</strong> {{ p.get_quantidade_estoque() }}</div>
+            <div class="info"><strong>Estoque:</strong> <span data-estoque-produto="{{ p.get_id() }}">{{ p.get_quantidade_estoque() }}</span></div>
             {% else %}
             <div class="info"><strong>Prazo:</strong> {{ p.get_prazo_entrega() }} dias</div>
             {% endif %}
@@ -32,4 +35,9 @@
         {% endfor %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/websocket_client.js') }}"></script>
 {% endblock %}
