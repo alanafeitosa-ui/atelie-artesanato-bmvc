@@ -12,8 +12,7 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-socketio = SocketIO(app, cors_allowed_origins="*")
-socketio.init_app(app)
+socketio.init_app(app, cors_allowed_origins="*")
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
