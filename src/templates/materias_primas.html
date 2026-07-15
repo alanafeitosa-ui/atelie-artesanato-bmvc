@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% set titulo_pagina = "Matérias-primas" %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/websocket.css') }}">
+{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -11,11 +14,11 @@
 
     <div class="grade-cards">
         {% for mp in materias %}
-        <div class="card">
+        <div class="card{% if mp.get_quantidade_estoque() <= mp.get_estoque_minimo() %} estoque-baixo{% endif %}" data-materia-id="{{ mp.get_id() }}" data-minimo="{{ mp.get_estoque_minimo() }}">
             <span class="card-icone">🧵</span>
             <h3>{{ mp.get_nome() }}</h3>
             <div class="categoria">{{ mp.get_unidade_medida() }}</div>
-            <div class="info"><strong>Estoque:</strong> {{ mp.get_quantidade_estoque() }}</div>
+            <div class="info"><strong>Estoque:</strong> <span data-estoque-materia="{{ mp.get_id() }}">{{ mp.get_quantidade_estoque() }}</span></div>
             <div class="info"><strong>Mínimo:</strong> {{ mp.get_estoque_minimo() }}</div>
             <div class="preco">{{ mp.get_quantidade_estoque() }} {{ mp.get_unidade_medida() }}</div>
             <div class="acoes">
@@ -26,4 +29,9 @@
         {% endfor %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/websocket_client.js') }}"></script>
 {% endblock %}
