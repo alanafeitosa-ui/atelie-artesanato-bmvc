@@ -5,6 +5,7 @@ Sistema web desenvolvido para a disciplina de programação orientada a objetos 
 O sistema é destinado exclusivamente ao proprietário de um ateliê de artesanato, permitindo gerenciar produtos, clientes, pedidos, matérias-primas e estoque de forma organizada.
 
 ---
+
 ## *Objetivo*
 Desenvolver um sistema seguindo os princípios da Programação Orientada a Objetos e da arquitetura MVC, contemplando os requisitos dos quatro níveis da disciplina.
 
@@ -17,14 +18,16 @@ Desenvolver um sistema seguindo os princípios da Programação Orientada a Obje
 - Controle de estoque;
 - Controle de matéria-prima;
 - Sistema de login;
-- Área administrativa
-- Atualização em tempo real (WebSocket).
+- Área administrativa;
+- Atualização de estoque em tempo real via WebSocket, sem necessidade de recarregar a página.
 
 ---
 
 ## *Tecnologias* 
 - Python;
 - Flask;
+- Flask-SocketIO;
+- Socket.IO (cliente);
 - SQLite;
 - HTML5;
 - CSS3;
@@ -36,14 +39,14 @@ Desenvolver um sistema seguindo os princípios da Programação Orientada a Obje
 O projeto segue o padrão **BMVC**
 ```
 Boundary
- ↓
+↓
 Controller
- ↓
+↓
 Model
- ↓
- SQLite
- ↓
- View (Templates HTML)
+↓
+SQLite
+↓
+View (Templates HTML)
 ```
 ---
 
@@ -52,13 +55,36 @@ Model
 src/
 |
 |--app.py
+|--websocket.py
 |--controllers/
 |--models/
 |--boundary/
 |--database/
 |--templates/
 |--static/
+|   |--css/
+|   |--js/
+
+---
+
+## *Como executar*
+```bash
+# 1. Instalar dependências
+pip install -r requirements.txt
+
+# 2. Criar o banco de dados
+cd src/database
+python database.py
+cd ../..
+
+# 3. Rodar o servidor
+cd src
+python app.py
 ```
+Acesse `http://127.0.0.1:5000` no navegador.
+
+**Login padrão:** `admin` / `123456`
+
 ---
 
 ## *Modelagem*
@@ -92,4 +118,4 @@ O sistema utiliza conceitos de Orientação a Objetos como:
 ---
 
 ## *Status*
-🚧 Em desenvolvimento
+✅ Concluído — Níveis Ⅰ, Ⅱ, Ⅲ e Ⅳ entregues
